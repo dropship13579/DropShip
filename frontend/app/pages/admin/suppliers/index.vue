@@ -196,7 +196,7 @@
                         <div class="supplier-top">
                             <div>
                                 <h3>{{ sup.name }}</h3>
-                                <span class="shipping-pill">⚡ Avg Shipping: {{ sup.average_shipping_days }} days</span>
+                                <span class="shipping-pill"><i class="fa-solid fa-bolt"></i> Avg Shipping: {{ sup.average_shipping_days }} days</span>
                             </div>
                             <span class="prod-count-badge">{{ sup.products_count || 0 }} products</span>
                         </div>

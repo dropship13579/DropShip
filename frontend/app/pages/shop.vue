@@ -289,17 +289,23 @@ onMounted(async () => {
                         <div class="rating-options">
                             <button type="button" class="rating-row-btn" :class="{ 'active': minRating === '4' }"
                                 @click="selectRating(4)">
-                                <span class="gold-stars">★★★★☆</span>
+                                <span class="gold-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                </span>
                                 <span class="rating-text">4.0 & Up</span>
                             </button>
                             <button type="button" class="rating-row-btn" :class="{ 'active': minRating === '3' }"
                                 @click="selectRating(3)">
-                                <span class="gold-stars">★★★☆☆</span>
+                                <span class="gold-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                                </span>
                                 <span class="rating-text">3.0 & Up</span>
                             </button>
                             <button type="button" class="rating-row-btn" :class="{ 'active': minRating === '2' }"
                                 @click="selectRating(2)">
-                                <span class="gold-stars">★★☆☆☆</span>
+                                <span class="gold-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                                </span>
                                 <span class="rating-text">2.0 & Up</span>
                             </button>
                         </div>
@@ -336,37 +342,37 @@ onMounted(async () => {
                         <div class="active-chips-area">
                             <span v-if="searchQuery" class="filter-chip">
                                 Search: "{{ searchQuery }}"
-                                <button type="button" @click="clearSearch" class="chip-remove" title="Remove">✕</button>
+                                <button type="button" @click="clearSearch" class="chip-remove" title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <span v-if="selectedCategory" class="filter-chip">
                                 Category: {{ getCategoryName(selectedCategory) }}
                                 <button type="button" @click="onCategorySelect('')" class="chip-remove"
-                                    title="Remove">✕</button>
+                                    title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <span v-if="minPrice || maxPrice" class="filter-chip">
                                 Price: {{ minPrice ? `$${minPrice}` : '$0' }} - {{ maxPrice ? `$${maxPrice}` : 'Above'
                                 }}
-                                <button type="button" @click="clearPrice" class="chip-remove" title="Remove">✕</button>
+                                <button type="button" @click="clearPrice" class="chip-remove" title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <span v-if="minRating" class="filter-chip">
-                                Rating: {{ minRating }}★ & Up
+                                Rating: {{ minRating }} <i class="fa-solid fa-star"></i> & Up
                                 <button type="button" @click="selectRating(minRating)" class="chip-remove"
-                                    title="Remove">✕</button>
+                                    title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <span v-if="inStockOnly" class="filter-chip">
                                 In Stock
                                 <button type="button" @click="toggleInStock" class="chip-remove"
-                                    title="Remove">✕</button>
+                                    title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <span v-if="onSaleOnly" class="filter-chip">
                                 On Sale
                                 <button type="button" @click="toggleOnSale" class="chip-remove"
-                                    title="Remove">✕</button>
+                                    title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </span>
 
                             <button v-if="activeFilterCount > 0" type="button" class="btn-clear-chips"
@@ -419,7 +425,7 @@ onMounted(async () => {
                 <div class="mobile-drawer-sheet" @click.stop>
                     <div class="drawer-header">
                         <h2>Filter & Refine</h2>
-                        <button type="button" class="btn-close-drawer" @click="isMobileDrawerOpen = false">✕</button>
+                        <button type="button" class="btn-close-drawer" @click="isMobileDrawerOpen = false"><i class="fa-solid fa-xmark"></i></button>
                     </div>
 
                     <div class="drawer-content">
@@ -471,12 +477,16 @@ onMounted(async () => {
                             <div class="rating-options">
                                 <button type="button" class="rating-row-btn" :class="{ 'active': minRating === '4' }"
                                     @click="selectRating(4)">
-                                    <span class="gold-stars">★★★★☆</span>
+                                    <span class="gold-stars">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                    </span>
                                     <span class="rating-text">4.0 & Up</span>
                                 </button>
                                 <button type="button" class="rating-row-btn" :class="{ 'active': minRating === '3' }"
                                     @click="selectRating(3)">
-                                    <span class="gold-stars">★★★☆☆</span>
+                                    <span class="gold-stars">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                                    </span>
                                     <span class="rating-text">3.0 & Up</span>
                                 </button>
                             </div>
@@ -793,8 +803,10 @@ onMounted(async () => {
 
 .gold-stars {
     color: #f59e0b;
-    font-size: 0.95rem;
-    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
 }
 
 .rating-text {

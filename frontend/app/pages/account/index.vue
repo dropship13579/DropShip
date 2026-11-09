@@ -163,13 +163,12 @@
                             <!-- Security Checklist -->
                             <div class="password-rules">
                                 <div class="rule-item" :class="{ valid: isLengthValid }">
-                                    <span class="rule-icon">{{ isLengthValid ? '✓' : '○' }}</span>
+                                    <span class="rule-icon"><i :class="isLengthValid ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i></span>
                                     <span>At least 8 characters</span>
                                 </div>
                                 <div class="rule-item"
                                     :class="{ valid: isMatchValid && passwordForm.confirm_password }">
-                                    <span class="rule-icon">{{ (isMatchValid && passwordForm.confirm_password) ? '✓' :
-                                        '○' }}</span>
+                                    <span class="rule-icon"><i :class="(isMatchValid && passwordForm.confirm_password) ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i></span>
                                     <span>Passwords match</span>
                                 </div>
                             </div>

@@ -75,15 +75,15 @@
               <!-- Quick Trust Guarantees -->
               <div class="product-trust-strip">
                 <div class="trust-item">
-                  <span class="trust-icon">🚚</span>
+                  <span class="trust-icon"><i class="fa-solid fa-truck-fast"></i></span>
                   <span>Fast Tracked Delivery (4–9 Days)</span>
                 </div>
                 <div class="trust-item">
-                  <span class="trust-icon">🛡️</span>
+                  <span class="trust-icon"><i class="fa-solid fa-shield-halved"></i></span>
                   <span>30-Day Money-Back Guarantee</span>
                 </div>
                 <div class="trust-item">
-                  <span class="trust-icon">🔒</span>
+                  <span class="trust-icon"><i class="fa-solid fa-lock"></i></span>
                   <span>SSL Encrypted Checkout</span>
                 </div>
               </div>

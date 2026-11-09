@@ -91,7 +91,7 @@
 
             <!-- Empty State -->
             <div v-else-if="filteredOrders.length === 0" class="empty-orders-card">
-                <div class="empty-icon-box">📦</div>
+                <div class="empty-icon-box"><i class="fa-solid fa-box-open"></i></div>
                 <h3>No matching orders found</h3>
                 <p>No customer orders matched your search or status filters.</p>
                 <button @click="resetFilters" class="btn-reset">Reset Filters</button>
@@ -150,7 +150,7 @@
                                 <strong class="total-val">${{ Number(ord.total_amount).toFixed(2) }}</strong>
                                 <div v-if="ord.coupon_code" class="coupon-chip"
                                     :title="`Saved $${ord.discount_amount}`">
-                                    🏷️ {{ ord.coupon_code }}
+                                    <i class="fa-solid fa-tag"></i> {{ ord.coupon_code }}
                                 </div>
                                 <span class="pay-method-text">{{ ord.payment_method_display }}</span>
                             </td>
@@ -188,7 +188,7 @@
                                         placeholder="e.g. USPS-9400..." class="tracking-input" />
                                     <button v-if="hasTrackingChanged(ord)" @click="saveTracking(ord)"
                                         class="btn-save-track" title="Save Tracking Number">
-                                        ✓
+                                        <i class="fa-solid fa-check"></i>
                                     </button>
                                 </div>
                             </td>

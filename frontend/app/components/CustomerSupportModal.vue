@@ -28,7 +28,7 @@
             :class="{ active: activeTab === 'inquiry' }"
             @click="activeTab = 'inquiry'"
           >
-            <span class="tab-icon">✉️</span>
+            <span class="tab-icon"><i class="fa-solid fa-envelope"></i></span>
             <span>Send Message</span>
           </button>
           <button
@@ -37,7 +37,7 @@
             :class="{ active: activeTab === 'quick' }"
             @click="activeTab = 'quick'"
           >
-            <span class="tab-icon">⚡</span>
+            <span class="tab-icon"><i class="fa-solid fa-bolt"></i></span>
             <span>Instant Answers</span>
           </button>
           <button
@@ -46,7 +46,7 @@
             :class="{ active: activeTab === 'contact' }"
             @click="activeTab = 'contact'"
           >
-            <span class="tab-icon">📞</span>
+            <span class="tab-icon"><i class="fa-solid fa-phone"></i></span>
             <span>Contact Channels</span>
           </button>
         </div>
@@ -181,7 +181,7 @@
               class="quick-card"
             >
               <div class="quick-card-head">
-                <span class="q-icon">{{ item.icon }}</span>
+                <span class="q-icon"><i :class="item.icon"></i></span>
                 <h4>{{ item.title }}</h4>
               </div>
               <p>{{ item.desc }}</p>
@@ -196,7 +196,7 @@
         <div v-else class="tab-body contact-tab">
           <div class="channel-cards">
             <div class="channel-card">
-              <span class="channel-icon">📧</span>
+              <span class="channel-icon"><i class="fa-solid fa-envelope"></i></span>
               <h4>Email Support</h4>
               <p>For detailed order or billing inquiries.</p>
               <a href="mailto:support@dropshipstore.com" class="channel-action">
@@ -206,7 +206,7 @@
             </div>
 
             <div class="channel-card">
-              <span class="channel-icon">📦</span>
+              <span class="channel-icon"><i class="fa-solid fa-box-open"></i></span>
               <h4>Live Parcel Tracking</h4>
               <p>Instant real-time warehouse sourcing and carrier checkpoints.</p>
               <NuxtLink to="/track" @click="close" class="channel-action">
@@ -216,7 +216,7 @@
             </div>
 
             <div class="channel-card">
-              <span class="channel-icon">🕒</span>
+              <span class="channel-icon"><i class="fa-solid fa-clock"></i></span>
               <h4>Customer Care Hours</h4>
               <p>Our global fulfillment agents operate around the clock.</p>
               <div class="hours-list">
@@ -284,27 +284,27 @@ watch(
 
 const quickAnswers = [
   {
-    icon: '🚚',
+    icon: 'fa-solid fa-truck-fast',
     title: 'Track My Order',
     desc: 'Check live status of your order and carrier tracking number anytime without logging in.',
     link: '/track',
     linkLabel: 'Open Order Tracker'
   },
   {
-    icon: '🔄',
+    icon: 'fa-solid fa-arrows-rotate',
     title: '30-Day Money-Back Guarantee',
     desc: 'You can return any undamaged item within 30 days of arrival for a full refund or exchange.',
     link: null
   },
   {
-    icon: '🏷️',
+    icon: 'fa-solid fa-tag',
     title: 'Promotional Discounts',
     desc: 'Redeem active coupons like WELCOME10, SAVE20, or FLASH50 directly in the checkout summary.',
     link: '/cart',
     linkLabel: 'View Cart & Checkout'
   },
   {
-    icon: '🛡️',
+    icon: 'fa-solid fa-shield-halved',
     title: 'Supplier Quality Standards',
     desc: 'All products undergo rigorous factory pre-shipment inspections and come with a 1-year store warranty.',
     link: null

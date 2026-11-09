@@ -22,7 +22,7 @@
       <div class="destination-picker">
         <span class="dest-label">Deliver to:</span>
         <button type="button" @click="showCountrySelect = !showCountrySelect" class="btn-dest-change">
-          <span class="flag">{{ selectedCountry.flag }}</span>
+          <span class="country-badge"><i class="fa-solid fa-earth-americas"></i> {{ selectedCountry.code }}</span>
           <span class="country-name">{{ selectedCountry.name }}</span>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -39,7 +39,7 @@
             :class="{ active: c.code === selectedCountry.code }"
             @click="selectCountry(c)"
           >
-            <span>{{ c.flag }}</span>
+            <span class="country-pill">{{ c.code }}</span>
             <span>{{ c.name }}</span>
             <span class="transit-tag">{{ c.transit }}</span>
           </button>
@@ -117,7 +117,7 @@
 
     <!-- On-Time Guarantee Notice -->
     <div class="guarantee-footer">
-      <span class="shield-icon">🛡️</span>
+      <span class="shield-icon"><i class="fa-solid fa-shield-halved"></i></span>
       <span><strong>Guaranteed On-Time Delivery:</strong> If package arrives late, receive a $5 credit.</span>
     </div>
   </div>
@@ -141,13 +141,13 @@ const selectedMethod = ref('standard')
 const showCountrySelect = ref(false)
 
 const countries = [
-  { code: 'US', name: 'United States', flag: '🇺🇸', transit: '4–7 Days', offsetDays: 0 },
-  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', transit: '5–8 Days', offsetDays: 1 },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦', transit: '5–9 Days', offsetDays: 1 },
-  { code: 'AU', name: 'Australia', flag: '🇦🇺', transit: '6–10 Days', offsetDays: 2 },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪', transit: '4–8 Days', offsetDays: 1 },
-  { code: 'FR', name: 'France', flag: '🇫🇷', transit: '4–8 Days', offsetDays: 1 },
-  { code: 'IN', name: 'India', flag: '🇮🇳', transit: '5–9 Days', offsetDays: 1 }
+  { code: 'US', name: 'United States', transit: '4–7 Days', offsetDays: 0 },
+  { code: 'GB', name: 'United Kingdom', transit: '5–8 Days', offsetDays: 1 },
+  { code: 'CA', name: 'Canada', transit: '5–9 Days', offsetDays: 1 },
+  { code: 'AU', name: 'Australia', transit: '6–10 Days', offsetDays: 2 },
+  { code: 'DE', name: 'Germany', transit: '4–8 Days', offsetDays: 1 },
+  { code: 'FR', name: 'France', transit: '4–8 Days', offsetDays: 1 },
+  { code: 'IN', name: 'India', transit: '5–9 Days', offsetDays: 1 }
 ]
 
 const selectedCountry = ref(countries[0])
@@ -390,6 +390,24 @@ const activeDeliveryRange = computed(() => {
 .btn-dest-change:hover {
   border-color: var(--primary);
   color: var(--primary);
+}
+
+.country-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.country-pill {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-xs);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .country-dropdown {

@@ -23,7 +23,7 @@ const isGlobalSupportOpen = ref(false);
             @click="isGlobalSupportOpen = true"
             aria-label="Customer Support Help Desk"
         >
-            <span class="floating-icon">💬</span>
+            <span class="floating-icon"><i class="fa-solid fa-headset"></i></span>
             <span class="floating-text">Help & FAQ</span>
         </button>
 

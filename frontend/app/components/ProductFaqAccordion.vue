@@ -18,7 +18,7 @@
           :class="{ active: selectedCategory === cat.id }"
           @click="selectedCategory = cat.id"
         >
-          <span class="cat-icon">{{ cat.icon }}</span>
+          <span class="cat-icon"><i :class="cat.icon"></i></span>
           <span>{{ cat.label }}</span>
         </button>
       </div>
@@ -52,7 +52,7 @@
             <div class="content-inner">
               <p>{{ item.answer }}</p>
               <div v-if="item.highlight" class="content-callout">
-                <span class="callout-icon">💡</span>
+                <span class="callout-icon"><i class="fa-solid fa-lightbulb"></i></span>
                 <span>{{ item.highlight }}</span>
               </div>
             </div>
@@ -64,9 +64,9 @@
       <div class="faq-help-box">
         <div class="help-box-left">
           <div class="help-avatar-group">
-            <span class="avatar-pill a1">👩‍💼</span>
-            <span class="avatar-pill a2">👨‍💻</span>
-            <span class="avatar-pill a3">🎧</span>
+            <span class="avatar-pill a1"><i class="fa-solid fa-headset"></i></span>
+            <span class="avatar-pill a2"><i class="fa-solid fa-user-shield"></i></span>
+            <span class="avatar-pill a3"><i class="fa-solid fa-comments"></i></span>
           </div>
           <div>
             <h3>Still have questions about this product?</h3>
@@ -91,11 +91,11 @@ const selectedCategory = ref('all')
 const openIndex = ref(0) // Default first FAQ open
 
 const categories = [
-  { id: 'all', label: 'All Questions', icon: '✨' },
-  { id: 'shipping', label: 'Shipping & Delivery', icon: '🚚' },
-  { id: 'returns', label: 'Returns & Refunds', icon: '🔄' },
-  { id: 'payment', label: 'Payment & Security', icon: '🔒' },
-  { id: 'quality', label: 'Quality & Warranty', icon: '🛡️' }
+  { id: 'all', label: 'All Questions', icon: 'fa-solid fa-wand-magic-sparkles' },
+  { id: 'shipping', label: 'Shipping & Delivery', icon: 'fa-solid fa-truck-fast' },
+  { id: 'returns', label: 'Returns & Refunds', icon: 'fa-solid fa-arrows-rotate' },
+  { id: 'payment', label: 'Payment & Security', icon: 'fa-solid fa-lock' },
+  { id: 'quality', label: 'Quality & Warranty', icon: 'fa-solid fa-shield-halved' }
 ]
 
 const faqs = [
