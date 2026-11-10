@@ -83,7 +83,7 @@ class ProductListView(generics.ListAPIView):
     
 
 class ProductDetailView(generics.RetrieveAPIView):
-    queryset = Product.objects.filter(is_active=True).select_related("category")
+    queryset = Product.objects.filter(is_active=True).select_related("category").prefetch_related("images")
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = "slug"

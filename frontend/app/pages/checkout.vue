@@ -3,7 +3,12 @@
     <div class="checkout-page">
         <div class="checkout-container">
             <div class="checkout-header">
-                <NuxtLink to="/cart" class="back-link">&larr; Back to Cart</NuxtLink>
+                <NuxtLink to="/cart" class="btn-back-nav" aria-label="Back to Cart">
+                    <span class="back-arrow-wrap">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </span>
+                    <span>Back to Cart</span>
+                </NuxtLink>
                 <h1>Secure Checkout</h1>
             </div>
 
@@ -87,7 +92,7 @@
                                         <strong>Cash on Delivery (COD)</strong>
                                         <span class="badge-pill">Popular</span>
                                     </div>
-                                    <p class="payment-desc">Pay in cash when your dropship shipment arrives at your
+                                    <p class="payment-desc">Pay in cash when your KyroKart shipment arrives at your
                                         doorstep.</p>
                                 </div>
                             </label>
@@ -363,21 +368,11 @@ onMounted(async () => {
 }
 
 .checkout-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
     margin-bottom: 2rem;
-}
-
-.back-link {
-    display: inline-block;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    text-decoration: none;
-    transition: color 0.15s;
-}
-
-.back-link:hover {
-    color: var(--primary);
 }
 
 .checkout-header h1 {

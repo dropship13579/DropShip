@@ -137,8 +137,8 @@ const faqs = [
   },
   {
     category: 'quality',
-    question: 'How do you ensure product authenticity and supplier quality?',
-    answer: 'Every supplier on our platform undergoes strict vetting including factory audits, material quality evaluations, and delivery speed benchmarks before their items are listed in our catalog.',
+    question: 'How do you ensure product authenticity and catalog quality?',
+    answer: 'Every manufacturer on our platform undergoes strict vetting including factory audits, material quality evaluations, and delivery speed benchmarks before their items are listed in our catalog.',
     highlight: 'All products are covered by our 1-year store warranty against manufacturer defects.'
   },
   {

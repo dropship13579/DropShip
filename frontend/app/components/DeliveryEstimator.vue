@@ -153,7 +153,7 @@ const countries = [
 const selectedCountry = ref(countries[0])
 
 if (import.meta.client) {
-  const savedCode = localStorage.getItem('dropship_dest_country')
+  const savedCode = localStorage.getItem('kyrokart_dest_country') || localStorage.getItem('dropship_dest_country')
   if (savedCode) {
     const found = countries.find(c => c.code === savedCode)
     if (found) selectedCountry.value = found
@@ -164,7 +164,7 @@ function selectCountry(country) {
   selectedCountry.value = country
   showCountrySelect.value = false
   if (import.meta.client) {
-    localStorage.setItem('dropship_dest_country', country.code)
+    localStorage.setItem('kyrokart_dest_country', country.code)
   }
 }
 

@@ -3,7 +3,7 @@
   <div class="auth-page">
     <div class="auth-card">
       <h2>Create an Account</h2>
-      <p class="subtitle">Join DropShip to place orders and track delivery.</p>
+      <p class="subtitle">Join KyroKart to place orders and track delivery.</p>
 
       <div v-if="errorMsg" class="error-banner">
         {{ errorMsg }}

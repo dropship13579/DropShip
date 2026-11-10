@@ -267,7 +267,7 @@ class PublicOrderTrackView(APIView):
             current_idx = 0
         status_steps = [
             {"key": "pending", "label": "Order Confirmed", "desc": "Order verified in our store system"},
-            {"key": "processing", "label": "Sourcing & Packaging", "desc": "Items prepared at dropship warehouse"},
+            {"key": "processing", "label": "Sourcing & Packaging", "desc": "Items prepared at KyroKart warehouse"},
             {"key": "shipped", "label": "In Transit", "desc": "Package handed over to carrier with tracking code"},
             {"key": "delivered", "label": "Delivered", "desc": "Shipment arrived at your destination"}
         ]

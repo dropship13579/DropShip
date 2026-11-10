@@ -26,16 +26,47 @@ export const useAdminApi = () => {
             body: JSON.stringify(data)
         })
 
-    // 3. Inventory Management
+    // 3. Inventory & Catalog Management
     const getProducts = () => fetchWithAuth('/admin/products/')
+
+    const createProduct = (formData) =>
+        fetchWithAuth('/admin/products/', {
+            method: 'POST',
+            body: formData
+        })
 
     const updateProduct = (id, data) =>
         fetchWithAuth(`/admin/products/${id}/`, {
             method: 'PATCH',
-            body: JSON.stringify(data)
+            body: data instanceof FormData ? data : JSON.stringify(data)
         })
 
-    // 4. Supplier & Dropship Profit Margins
+    const deleteProduct = (id) =>
+        fetchWithAuth(`/admin/products/${id}/`, {
+            method: 'DELETE'
+        })
+
+    // Categories
+    const getCategories = () => fetchWithAuth('/categories/')
+
+    const createCategory = (formData) =>
+        fetchWithAuth('/categories/', {
+            method: 'POST',
+            body: formData
+        })
+
+    const updateCategory = (slug, formData) =>
+        fetchWithAuth(`/categories/${slug}/`, {
+            method: 'PATCH',
+            body: formData
+        })
+
+    const deleteCategory = (slug) =>
+        fetchWithAuth(`/categories/${slug}/`, {
+            method: 'DELETE'
+        })
+
+    // 4. Supplier & KyroKart Profit Margins
     const getSuppliers = () => fetchWithAuth('/admin/suppliers/')
 
     const createSupplier = (data) =>
@@ -69,18 +100,45 @@ export const useAdminApi = () => {
             body: JSON.stringify(data)
         })
 
+    // 5. Customer Support & Inquiries
+    const getSupportTickets = (params = {}) => {
+        const query = new URLSearchParams()
+        if (params.status) query.append('status', params.status)
+        if (params.inquiry_type) query.append('inquiry_type', params.inquiry_type)
+        if (params.search) query.append('search', params.search)
+        const qs = query.toString()
+        return fetchWithAuth(`/admin/support/${qs ? `?${qs}` : ''}`)
+    }
+
+    const getSupportTicket = (id) => fetchWithAuth(`/admin/support/${id}/`)
+
+    const updateSupportTicket = (id, data) =>
+        fetchWithAuth(`/admin/support/${id}/`, {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        })
+
     return {
         getStats,
         getOrders,
         getOrder,
         updateOrder,
         getProducts,
+        createProduct,
         updateProduct,
+        deleteProduct,
+        getCategories,
+        createCategory,
+        updateCategory,
+        deleteCategory,
         getSuppliers,
         createSupplier,
         updateSupplier,
         deleteSupplier,
         getProductSourcing,
-        updateProductSourcing
+        updateProductSourcing,
+        getSupportTickets,
+        getSupportTicket,
+        updateSupportTicket
     }
 }

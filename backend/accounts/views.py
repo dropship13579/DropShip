@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Address, CustomerProfile
+from .models import Address, CustomerProfile, NewsletterSubscriber
 from .serializers import (
     UserSerializer,
     RegisterSerializer,
@@ -14,6 +14,7 @@ from .serializers import (
     CustomerProfileSerializer,
     AddressSerializer,
     SupportTicketSerializer,
+    NewsletterSubscriberSerializer,
 )
 
 
@@ -175,4 +176,29 @@ class SupportTicketCreateView(APIView):
                 },
                 status=status.HTTP_201_CREATED,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NewsletterSubscribeView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email", "").strip().lower()
+        if not email or "@" not in email:
+            return Response({"error": "A valid email address is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        subscriber, created = NewsletterSubscriber.objects.get_or_create(
+            email=email,
+            defaults={"is_active": True}
+        )
+        if not created and not subscriber.is_active:
+            subscriber.is_active = True
+            subscriber.save()
+
+        return Response(
+            {
+                "message": "Thank you for subscribing to our VIP Club! Use code WELCOME10 for 10% off.",
+                "subscriber": NewsletterSubscriberSerializer(subscriber).data,
+            },
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )

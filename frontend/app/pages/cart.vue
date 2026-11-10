@@ -75,7 +75,12 @@
                     </div>
 
                     <div class="cart-actions-row">
-                        <NuxtLink to="/shop" class="btn-continue">&larr; Continue Shopping</NuxtLink>
+                        <NuxtLink to="/shop" class="btn-back-nav" aria-label="Continue Shopping">
+                            <span class="back-arrow-wrap">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </span>
+                            <span>Continue Shopping</span>
+                        </NuxtLink>
                     </div>
                 </div>
 
@@ -91,7 +96,7 @@
 
                         <div class="summary-line">
                             <span>Standard Shipping</span>
-                            <span class="free-text">Free (Dropship Direct)</span>
+                            <span class="free-text">Free (KyroKart Direct)</span>
                         </div>
 
                         <div class="summary-divider"></div>

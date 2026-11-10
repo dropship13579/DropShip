@@ -3,9 +3,14 @@
     <div class="orders-page">
         <div class="orders-container">
             <div class="page-header">
-                <NuxtLink to="/account" class="back-link">&larr; Back to My Account</NuxtLink>
+                <NuxtLink to="/account" class="btn-back-nav" aria-label="Back to My Account">
+                    <span class="back-arrow-wrap">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </span>
+                    <span>Back to My Account</span>
+                </NuxtLink>
                 <h1>My Orders</h1>
-                <p class="subtitle">Track your dropship packages and view past receipts.</p>
+                <p class="subtitle">Track your KyroKart packages and view past receipts.</p>
             </div>
 
             <!-- Loading State -->
@@ -20,7 +25,7 @@
 
             <!-- Empty State -->
             <EmptyState v-else-if="orders.length === 0" title="No orders yet"
-                description="You haven't placed any orders yet. Discover trending dropship products and place your first order today!">
+                description="You haven't placed any orders yet. Discover trending products on KyroKart and place your first order today!">
                 <template #action>
                     <NuxtLink to="/shop" class="btn-shop">Explore Products</NuxtLink>
                 </template>
@@ -151,20 +156,11 @@ onMounted(() => {
 }
 
 .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
     margin-bottom: 2rem;
-}
-
-.back-link {
-    display: inline-block;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    transition: color 0.15s;
-}
-
-.back-link:hover {
-    color: var(--primary);
 }
 
 .page-header h1 {

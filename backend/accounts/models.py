@@ -95,6 +95,18 @@ class SupportTicket(models.Model):
         return f"{self.ticket_number} - {self.subject} ({self.status})"
 
 
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.email
+
+
 @receiver(post_save, sender=User)
 def create_or_update_customer_profile(sender, instance, created, **kwargs):
     if created:

@@ -101,7 +101,7 @@
                         <div class="tab-header">
                             <div>
                                 <h2>Login & Password Security</h2>
-                                <p class="section-desc">Ensure your dropship customer account stays protected.</p>
+                                <p class="section-desc">Ensure your KyroKart customer account stays protected.</p>
                             </div>
                         </div>
 

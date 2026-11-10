@@ -44,7 +44,7 @@ async function handleQuickAdd() {
         />
         <div v-else class="image-placeholder">
           <span class="placeholder-icon"><i class="fa-solid fa-box"></i></span>
-          <span class="placeholder-text">{{ product.category_name || 'DropShip Item' }}</span>
+          <span class="placeholder-text">{{ product.category_name || 'KyroKart Item' }}</span>
         </div>
 
         <!-- Badges -->

@@ -50,9 +50,24 @@ const filteredProducts = computed(() => {
   return products.value.filter(p => p.category?.slug === activeFilter.value)
 })
 
-function handleNewsletterSubmit() {
-  if (newsletterEmail.value.includes('@')) {
+const newsletterSubmitting = ref(false)
+const newsletterError = ref('')
+const { fetchWithAuth } = useApi()
+
+async function handleNewsletterSubmit() {
+  if (!newsletterEmail.value || !newsletterEmail.value.includes('@')) return
+  newsletterSubmitting.value = true
+  newsletterError.value = ''
+  try {
+    await fetchWithAuth('/accounts/newsletter/', {
+      method: 'POST',
+      body: JSON.stringify({ email: newsletterEmail.value.trim() })
+    })
     newsletterSuccess.value = true
+  } catch (err) {
+    newsletterError.value = err.data?.error || err.message || 'Unable to subscribe. Please try again.'
+  } finally {
+    newsletterSubmitting.value = false
   }
 }
 
@@ -73,60 +88,115 @@ function getCategoryIcon(slug) {
     <section class="hero-section">
       <div class="hero-glow"></div>
       <div class="hero-container">
-        <!-- Trust Rating Chip -->
-        <div class="hero-rating-pill">
-          <div class="star-group">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <div class="hero-layout-grid">
+          <!-- Left Column: Copy & Actions -->
+          <div class="hero-content-col">
+            <!-- Trust Rating Chip -->
+            <div class="hero-rating-pill">
+              <div class="star-group">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <span class="rating-text">4.9/5 from 2,400+ verified shoppers</span>
+              <span class="pill-divider">•</span>
+              <span class="pill-badge">Factory Direct</span>
+            </div>
+
+            <!-- Headline & Subtitle -->
+            <h1 class="hero-title">
+              Curated Tech & Modern Essentials, <br class="title-break" />
+              <span class="gradient-text">Direct to Your Doorstep.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+              Bypass retail markups. Explore rigorously tested audio, fast wireless docks, and smart lifestyle upgrades
+              backed by direct factory sourcing and 30-day risk-free guarantees.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-actions">
+              <NuxtLink to="/shop" class="btn-primary-hero">
+                <span>Explore Catalog</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </NuxtLink>
+
+              <NuxtLink to="/shop?on_sale=true" class="btn-secondary-hero">
+                <span class="deal-flame"><i class="fa-solid fa-fire"></i></span>
+                <span>View Flash Deals</span>
+              </NuxtLink>
+            </div>
+
+            <!-- Hero Stats Counters -->
+            <div class="hero-stats-grid">
+              <div class="stat-card">
+                <strong class="stat-num">15,000+</strong>
+                <span class="stat-label">Orders Shipped</span>
+              </div>
+              <div class="stat-card">
+                <strong class="stat-num">4–8 Days</strong>
+                <span class="stat-label">Tracked Air Delivery</span>
+              </div>
+              <div class="stat-card">
+                <strong class="stat-num">30 Days</strong>
+                <span class="stat-label">Money-Back Trial</span>
+              </div>
+              <div class="stat-card">
+                <strong class="stat-num">24 / 7</strong>
+                <span class="stat-label">Dedicated Support</span>
+              </div>
+            </div>
           </div>
-          <span class="rating-text">4.9/5 from 2,400+ verified shoppers</span>
-          <span class="pill-divider">•</span>
-          <span class="pill-badge">Factory Direct</span>
-        </div>
 
-        <!-- Headline & Subtitle -->
-        <h1 class="hero-title">
-          Curated Tech & Modern Essentials, <br class="title-break" />
-          <span class="gradient-text">Direct to Your Doorstep.</span>
-        </h1>
+          <!-- Right Column: Eye-Catching Visual Showcase -->
+          <div class="hero-visual-col">
+            <div class="hero-card-wrapper">
+              <div class="visual-halo"></div>
 
-        <p class="hero-subtitle">
-          Bypass retail markups. Explore rigorously tested audio, fast wireless docks, and smart lifestyle upgrades
-          backed by direct factory sourcing and 30-day risk-free guarantees.
-        </p>
+              <div class="hero-image-card">
+                <img
+                  src="/images/hero-showcase.jpg"
+                  alt="Curated Tech and Modern Lifestyle Essentials"
+                  class="hero-product-image"
+                  loading="eager"
+                  fetchpriority="high"
+                />
 
-        <!-- CTA Buttons -->
-        <div class="hero-actions">
-          <NuxtLink to="/shop" class="btn-primary-hero">
-            <span>Explore Catalog</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </NuxtLink>
+                <!-- Glassmorphism Floating Badge 1: Hot Trending Deal -->
+                <div class="floating-badge badge-top-right">
+                  <div class="badge-icon-box flame">
+                    <i class="fa-solid fa-fire"></i>
+                  </div>
+                  <div class="badge-text-box">
+                    <strong>Flash Deals Live</strong>
+                    <span>Up to 40% Off Direct</span>
+                  </div>
+                </div>
 
-          <NuxtLink to="/shop?on_sale=true" class="btn-secondary-hero">
-            <span class="deal-flame"><i class="fa-solid fa-fire"></i></span>
-            <span>View Flash Deals</span>
-          </NuxtLink>
-        </div>
+                <!-- Glassmorphism Floating Badge 2: Free Tracked Shipping -->
+                <div class="floating-badge badge-bottom-left">
+                  <div class="badge-icon-box green">
+                    <i class="fa-solid fa-truck-fast"></i>
+                  </div>
+                  <div class="badge-text-box">
+                    <strong>Fast Air Shipping</strong>
+                    <span>4–8 Days Tracked</span>
+                  </div>
+                </div>
 
-        <!-- Hero Stats Counters -->
-        <div class="hero-stats-grid">
-          <div class="stat-card">
-            <strong class="stat-num">15,000+</strong>
-            <span class="stat-label">Orders Shipped</span>
-          </div>
-          <div class="stat-card">
-            <strong class="stat-num">4–8 Days</strong>
-            <span class="stat-label">Tracked Air Delivery</span>
-          </div>
-          <div class="stat-card">
-            <strong class="stat-num">30 Days</strong>
-            <span class="stat-label">Money-Back Trial</span>
-          </div>
-          <div class="stat-card">
-            <strong class="stat-num">24 / 7</strong>
-            <span class="stat-label">Dedicated Support</span>
+                <!-- Glassmorphism Floating Badge 3: Verified Guarantee Pill -->
+                <div class="floating-badge badge-bottom-right">
+                  <div class="badge-icon-box blue">
+                    <i class="fa-solid fa-shield-halved"></i>
+                  </div>
+                  <div class="badge-text-box">
+                    <strong>Verified Factories</strong>
+                    <span>100% Quality Assured</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -147,7 +217,7 @@ function getCategoryIcon(slug) {
             </div>
             <div class="perk-content">
               <h4>Direct Tracked Dispatch</h4>
-              <p>Real-time carrier checkpoints from vetted supplier hubs.</p>
+              <p>Real-time carrier checkpoints from verified dispatch centers.</p>
             </div>
           </div>
 
@@ -220,8 +290,9 @@ function getCategoryIcon(slug) {
             :to="`/shop?category=${cat.slug}`"
             class="category-card"
           >
-            <div class="cat-icon-bubble">
-              <i :class="getCategoryIcon(cat.slug)"></i>
+            <div class="cat-icon-bubble" :class="{ 'has-img': !!cat.image }">
+              <img v-if="cat.image" :src="cat.image" :alt="cat.name" class="cat-thumb-img" />
+              <i v-else :class="getCategoryIcon(cat.slug)"></i>
             </div>
             <div class="cat-details">
               <h3>{{ cat.name }}</h3>
@@ -333,7 +404,7 @@ function getCategoryIcon(slug) {
         <div class="section-header-center">
           <span class="sub-header-tag">Verified Experiences</span>
           <h2>Loved by Smart Shoppers Worldwide</h2>
-          <p class="section-subtext">Real reviews from customers who made the switch to direct factory dropshipping.</p>
+          <p class="section-subtext">Real reviews from customers who made the switch to KyroKart direct sourcing.</p>
         </div>
 
         <div class="testimonials-grid">
@@ -407,13 +478,16 @@ function getCategoryIcon(slug) {
                 v-model="newsletterEmail"
                 type="email"
                 required
+                :disabled="newsletterSubmitting"
                 placeholder="Enter your email address..."
                 class="newsletter-input"
               />
-              <button type="submit" class="btn-newsletter">
-                Claim My 10% Off
+              <button type="submit" class="btn-newsletter" :disabled="newsletterSubmitting">
+                {{ newsletterSubmitting ? 'Subscribing...' : 'Claim My 10% Off' }}
               </button>
             </form>
+
+            <p v-if="newsletterError" class="newsletter-error-msg">{{ newsletterError }}</p>
 
             <span class="newsletter-note">Zero spam. Unsubscribe anytime with 1 click.</span>
           </div>
@@ -432,30 +506,40 @@ function getCategoryIcon(slug) {
 /* HERO SECTION */
 .hero-section {
   position: relative;
-  background: radial-gradient(circle at 50% 20%, #eff6ff 0%, #f8fafc 85%, #f1f5f9 100%);
+  background: radial-gradient(circle at 75% 25%, #eff6ff 0%, #f8fafc 65%, #f1f5f9 100%);
   border-bottom: 1px solid var(--border-color);
-  padding: 5rem 1.5rem 4.5rem;
+  padding: 4.5rem 1.5rem 4rem;
   overflow: hidden;
-  text-align: center;
 }
 
 .hero-glow {
   position: absolute;
-  top: -150px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 80%);
+  top: -120px;
+  left: 20%;
+  width: 650px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.14) 0%, rgba(99, 102, 241, 0.07) 50%, transparent 80%);
   filter: blur(60px);
   pointer-events: none;
 }
 
 .hero-container {
-  max-width: 860px;
+  max-width: 1260px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
+}
+
+/* 2-Column Hero Layout */
+.hero-layout-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  align-items: center;
+  gap: 3.5rem;
+}
+
+.hero-content-col {
+  text-align: left;
 }
 
 /* Rating Pill */
@@ -467,7 +551,7 @@ function getCategoryIcon(slug) {
   border: 1px solid var(--border-color);
   padding: 0.35rem 0.95rem;
   border-radius: var(--radius-full);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.35rem;
   font-size: 0.82rem;
   font-weight: 600;
   box-shadow: var(--shadow-sm);
@@ -475,8 +559,9 @@ function getCategoryIcon(slug) {
 
 .star-group {
   color: #eab308;
-  letter-spacing: 0.05em;
-  font-size: 0.9rem;
+  display: inline-flex;
+  gap: 0.15rem;
+  font-size: 0.82rem;
 }
 
 .rating-text {
@@ -496,30 +581,29 @@ function getCategoryIcon(slug) {
 
 /* Hero Title & Subtitle */
 .hero-title {
-  font-size: 3.4rem;
+  font-size: 3.25rem;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.14;
   letter-spacing: -0.035em;
   color: var(--text-main);
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.25rem;
 }
 
 .hero-subtitle {
   color: var(--text-muted);
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   line-height: 1.65;
-  max-width: 680px;
-  margin: 0 auto 2.25rem;
+  max-width: 580px;
+  margin: 0 0 2rem;
 }
 
 /* Hero Actions */
 .hero-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.75rem;
 }
 
 .btn-primary-hero {
@@ -567,8 +651,8 @@ function getCategoryIcon(slug) {
 .hero-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  padding-top: 2rem;
+  gap: 1.25rem;
+  padding-top: 1.85rem;
   border-top: 1px solid rgba(226, 232, 240, 0.8);
 }
 
@@ -580,14 +664,162 @@ function getCategoryIcon(slug) {
 
 .stat-num {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.55rem;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
 }
 
 .stat-label {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Right Column: Visual Showcase */
+.hero-visual-col {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-card-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 530px;
+}
+
+.visual-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 115%;
+  height: 115%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(99, 102, 241, 0.15) 45%, transparent 72%);
+  filter: blur(48px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-image-card {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 0.65rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.hero-image-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 32px 64px -16px rgba(37, 99, 235, 0.24);
+}
+
+.hero-product-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--radius-xl) - 4px);
+  display: block;
+}
+
+/* Floating Glassmorphism Badges */
+.floating-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-lg);
+  padding: 0.65rem 1rem;
+  box-shadow: 0 14px 30px -6px rgba(15, 23, 42, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.badge-top-right {
+  top: -14px;
+  right: -16px;
+  animation: floatSlow1 4.5s ease-in-out infinite;
+}
+
+.badge-bottom-left {
+  bottom: 24px;
+  left: -22px;
+  animation: floatSlow2 5s ease-in-out infinite;
+}
+
+.badge-bottom-right {
+  bottom: -16px;
+  right: 20px;
+  animation: floatSlow3 5.5s ease-in-out infinite;
+}
+
+@keyframes floatSlow1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes floatSlow2 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes floatSlow3 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.badge-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.badge-icon-box.flame {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.badge-icon-box.green {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.badge-icon-box.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.badge-text-box {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.badge-text-box strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+
+.badge-text-box span {
+  font-size: 0.72rem;
   color: var(--text-muted);
   font-weight: 600;
 }
@@ -724,6 +956,19 @@ function getCategoryIcon(slug) {
   font-size: 1.4rem;
   color: var(--primary);
   flex-shrink: 0;
+}
+
+.cat-icon-bubble.has-img {
+  overflow: hidden;
+  padding: 0;
+  background: #f1f5f9;
+}
+
+.cat-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
 .cat-details h3 {
@@ -1094,6 +1339,27 @@ function getCategoryIcon(slug) {
 
 /* RESPONSIVE QUERIES */
 @media (max-width: 1024px) {
+  .hero-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+    text-align: center;
+  }
+  .hero-content-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-content-col .hero-subtitle {
+    margin: 0 auto 2rem;
+  }
+  .hero-content-col .hero-actions {
+    justify-content: center;
+  }
+  .hero-card-wrapper {
+    max-width: 480px;
+    margin: 0 auto;
+  }
   .hero-title { font-size: 2.75rem; }
   .perks-grid { grid-template-columns: repeat(2, 1fr); }
   .category-grid { grid-template-columns: 1fr; }
@@ -1102,9 +1368,25 @@ function getCategoryIcon(slug) {
 }
 
 @media (max-width: 640px) {
+  .hero-section {
+    padding: 3.5rem 1rem 3rem;
+  }
   .hero-title { font-size: 2.15rem; }
   .title-break { display: none; }
-  .hero-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .hero-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; }
+  .floating-badge {
+    padding: 0.5rem 0.75rem;
+  }
+  .floating-badge .badge-icon-box {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+  .badge-text-box strong { font-size: 0.76rem; }
+  .badge-text-box span { font-size: 0.68rem; }
+  .badge-top-right { top: -8px; right: -6px; }
+  .badge-bottom-left { bottom: -10px; left: -6px; }
+  .badge-bottom-right { display: none; }
   .perks-grid { grid-template-columns: 1fr; }
   .newsletter-form { flex-direction: column; }
   .btn-newsletter { width: 100%; }

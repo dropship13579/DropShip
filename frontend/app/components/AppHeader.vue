@@ -2,60 +2,28 @@
 <template>
   <header class="app-header-wrapper">
     <!-- Top Announcement Ticker (Storefront only) -->
-    <PromoTopBar v-if="!isAdmin" />
+    <PromoTopBar />
 
-    <div class="app-header" :class="{ 'admin-header-bar': isAdmin }">
+    <div class="app-header">
       <div class="header-inner">
-        <!-- Logo: directs admin to /admin and customers to / -->
-        <NuxtLink :to="isAdmin ? '/admin' : '/'" class="logo" aria-label="DropShip Home">
-          <div class="logo-mark">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-              <line x1="12" y1="22.08" x2="12" y2="12"></line>
-            </svg>
-          </div>
-          <span class="logo-text">
-            <span class="logo-primary">Drop</span><span class="logo-accent">Ship</span>
-          </span>
-          <span v-if="isAdmin" class="admin-chip">Admin</span>
+        <!-- Logo -->
+        <NuxtLink to="/" class="logo" aria-label="KyroKart Home">
+          <img src="/images/logo.png" alt="KyroKart Logo" class="brand-logo-img" />
         </NuxtLink>
 
-        <!-- Customer Search Bar (Hidden for Admins, visible on Desktop) -->
-        <div v-if="!isAdmin" class="search-area desktop-only">
+        <!-- Customer Search Bar (visible on Desktop) -->
+        <div class="search-area desktop-only">
           <SearchBar @search="onSearch" />
         </div>
 
-        <!-- ADMIN NAVIGATION (Displayed only for Staff) -->
-        <nav v-if="isAdmin" class="admin-nav-actions">
-          <NuxtLink to="/admin" class="admin-nav-link" active-class="active-admin-link">
-            Website Status & Analytics
-          </NuxtLink>
-          <NuxtLink to="/admin/products" class="admin-nav-link" active-class="active-admin-link">
-            Product Inventory
-          </NuxtLink>
-          <NuxtLink to="/admin/orders" class="admin-nav-link" active-class="active-admin-link">
-            Order Packaging & Tracking
-          </NuxtLink>
-          <NuxtLink to="/admin/suppliers" class="admin-nav-link" active-class="active-admin-link">
-            Suppliers & Margins
-          </NuxtLink>
-          <div class="admin-user-pill">
-            <span class="staff-tag">Staff</span>
-            <span class="staff-name">{{ user?.username }}</span>
-          </div>
-          <button @click="logout" class="btn-logout-admin">Logout</button>
-        </nav>
-
-        <!-- CUSTOMER NAVIGATION (Displayed for Regular Users & Guests) -->
-        <nav v-else class="nav-actions desktop-only">
+        <!-- STOREFRONT NAVIGATION -->
+        <nav class="nav-actions desktop-only">
           <NuxtLink to="/shop" class="nav-link" active-class="active-link">
             <span>Shop</span>
           </NuxtLink>
           <NuxtLink to="/track" class="nav-link" active-class="active-link">
             <span>Track Order</span>
           </NuxtLink>
-
 
           <!-- Customer Wishlist Link with Count Badge -->
           <NuxtLink to="/account/wishlist" class="action-icon-btn" aria-label="Wishlist">
@@ -85,6 +53,12 @@
           </div>
 
           <div v-else-if="isAuthenticated" class="auth-user">
+            <!-- Dedicated Admin Panel Quick Shortcut for Staff -->
+            <NuxtLink v-if="isAdmin" to="/admin" class="btn-staff-pill" title="Open Admin Command Center">
+              <i class="fa-solid fa-gauge-high"></i>
+              <span>Admin Panel</span>
+            </NuxtLink>
+
             <NuxtLink to="/account" class="user-pill-btn">
               <span class="user-avatar-small">{{ (user?.username || 'U')[0].toUpperCase() }}</span>
               <span class="user-name">Account</span>
@@ -105,7 +79,7 @@
         </nav>
 
         <!-- Mobile Controls (Search Icon + Cart + Hamburger) -->
-        <div v-if="!isAdmin" class="mobile-controls mobile-only">
+        <div class="mobile-controls mobile-only">
           <NuxtLink to="/cart" class="action-icon-btn" aria-label="Cart">
             <div class="icon-wrap">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -132,13 +106,18 @@
       </div>
 
       <!-- Mobile Search Row -->
-      <div v-if="!isAdmin" class="mobile-search-row mobile-only">
+      <div class="mobile-search-row mobile-only">
         <SearchBar @search="onSearch" />
       </div>
 
       <!-- Mobile Slide-out Drawer Navigation -->
-      <div v-if="!isAdmin && isMobileMenuOpen" class="mobile-drawer">
+      <div v-if="isMobileMenuOpen" class="mobile-drawer">
         <div class="mobile-drawer-links">
+          <NuxtLink v-if="isAdmin" to="/admin" class="mobile-nav-item admin-nav-pill" @click="isMobileMenuOpen = false">
+            <span class="m-icon"><i class="fa-solid fa-gauge-high"></i></span>
+            <span>Admin Console</span>
+          </NuxtLink>
+
           <NuxtLink to="/shop" class="mobile-nav-item" @click="isMobileMenuOpen = false">
             <span class="m-icon"><i class="fa-solid fa-bag-shopping"></i></span>
             <span>Shop Catalog</span>
@@ -220,12 +199,6 @@ function onSearch(query) {
   transition: all var(--transition-fast);
 }
 
-.admin-header-bar {
-  background: #0b0f19;
-  border-bottom-color: #1e293b;
-  color: #fff;
-}
-
 .header-inner {
   max-width: 1240px;
   margin: 0 auto;
@@ -244,21 +217,17 @@ function onSearch(query) {
   text-decoration: none;
 }
 
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #6366f1 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+.brand-logo-img {
+  height: 38px;
+  width: auto;
+  max-width: 170px;
+  object-fit: contain;
+  display: block;
   transition: transform var(--transition-fast);
 }
 
-.logo:hover .logo-mark {
-  transform: scale(1.05);
+.logo:hover .brand-logo-img {
+  transform: scale(1.03);
 }
 
 .logo-text {
@@ -475,69 +444,36 @@ function onSearch(query) {
   transform: translateY(-1px);
 }
 
-/* Admin Styles */
-.admin-nav-actions {
-  display: flex;
+/* Staff Pill for Storefront Header */
+.btn-staff-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
-}
-
-.admin-nav-link {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #94a3b8;
-  padding: 0.4rem 0.75rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s;
-}
-
-.admin-nav-link:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.active-admin-link {
-  color: #fff !important;
-  background: rgba(37, 99, 235, 0.35) !important;
-}
-
-.admin-user-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: #1e293b;
-  padding: 0.3rem 0.65rem;
-  border-radius: var(--radius-sm);
+  gap: 0.45rem;
+  background: #0f172a;
+  color: #60a5fa;
   font-size: 0.8rem;
-}
-
-.staff-tag {
-  background: #334155;
-  color: #94a3b8;
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
-  font-size: 0.7rem;
   font-weight: 700;
-  text-transform: uppercase;
-}
-
-.staff-name {
-  color: #f1f5f9;
-  font-weight: 600;
-}
-
-.btn-logout-admin {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.12);
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  border: 1px solid #1e293b;
+  text-decoration: none;
   transition: all 0.15s;
 }
 
-.btn-logout-admin:hover {
-  background: rgba(239, 68, 68, 0.25);
+.btn-staff-pill:hover {
+  background: #1e293b;
+  color: #93c5fd;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.admin-nav-pill {
+  background: #0f172a !important;
+  color: #60a5fa !important;
+  border: 1px solid #1e293b;
+  margin-bottom: 0.5rem;
+  font-weight: 700 !important;
 }
 
 /* Mobile Responsive */

@@ -4,7 +4,12 @@
         <div class="order-detail-container">
             <!-- Header & Actions -->
             <div class="page-top-bar">
-                <NuxtLink to="/account/orders" class="back-link">&larr; Back to Order History</NuxtLink>
+                <NuxtLink to="/account/orders" class="btn-back-nav" aria-label="Back to Order History">
+                    <span class="back-arrow-wrap">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </span>
+                    <span>Back to Order History</span>
+                </NuxtLink>
                 <div class="actions-group">
                     <button @click="printReceipt" class="btn-print" title="Print Invoice / Receipt">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -65,7 +70,7 @@
                     This order was cancelled.
                 </div>
 
-                <!-- Dropship Tracking Box (if available) -->
+                <!-- KyroKart Tracking Box (if available) -->
                 <div v-if="order.tracking_number" class="tracking-banner">
                     <div class="tracking-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -169,7 +174,7 @@
                                 <span>${{ Number(order.subtotal).toFixed(2) }}</span>
                             </div>
                             <div class="calc-line">
-                                <span>Shipping (Dropship Direct)</span>
+                                <span>Shipping (KyroKart Direct)</span>
                                 <span class="free-badge">Free</span>
                             </div>
                             <div v-if="Number(order.discount_amount) > 0" class="calc-line discount">
@@ -261,17 +266,9 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-bottom: 1.5rem;
-}
-
-.back-link {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.back-link:hover {
-    color: var(--primary);
 }
 
 .btn-print {

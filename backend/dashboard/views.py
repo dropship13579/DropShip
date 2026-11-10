@@ -10,11 +10,14 @@ from django.contrib.auth.models import User
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from orders.models import Order
-from products.models import Product, Category, Supplier
+from products.models import Product, ProductImage, Category, Supplier
+from accounts.models import SupportTicket, NewsletterSubscriber
 from orders.serializers import OrderSerializer
 from products.serializers import SupplierSerializer, ProductSourcingSerializer
+from accounts.serializers import SupportTicketSerializer
 
 
 
@@ -127,6 +130,15 @@ class AdminDashboardStatsView(APIView):
             })
         # 6. Customers & System Information
         total_customers = User.objects.filter(is_staff=False).count()
+        try:
+            total_open_tickets = SupportTicket.objects.filter(status="open").count()
+        except Exception:
+            total_open_tickets = 0
+
+        try:
+            total_subscribers = NewsletterSubscriber.objects.filter(is_active=True).count()
+        except Exception:
+            total_subscribers = 0
         return Response({
             "revenue": {
                 "total": float(total_revenue),
@@ -142,6 +154,10 @@ class AdminDashboardStatsView(APIView):
             "categories": categories_breakdown,
             "customers": {
                 "total": total_customers,
+            },
+            "support": {
+                "open_tickets": total_open_tickets,
+                "total_subscribers": total_subscribers,
             },
             "daily_sales": daily_sales,
             "system": {
@@ -222,34 +238,157 @@ class AdminOrderDetailUpdateView(APIView):
 
 class AdminProductsListView(APIView):
     """
-    GET /api/admin/products/
-    Full product inventory list for staff.
+    GET /api/admin/products/ - Full product inventory list with gallery images for staff.
+    POST /api/admin/products/ - Create new product with several uploaded images.
     """
     permission_classes = [permissions.IsAdminUser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get(self, request):
-        products = Product.objects.select_related("category").order_by("-created_at")
+        products = Product.objects.select_related("category").prefetch_related("images").order_by("-created_at")
         data = []
         for p in products:
+            gallery_urls = [request.build_absolute_uri(img.image.url) for img in p.images.all() if img.image]
             data.append({
                 "id": p.id,
                 "name": p.name,
                 "slug": p.slug,
+                "category_id": p.category_id,
                 "category_name": p.category.name if p.category else "Uncategorized",
-                "image": request.build_absolute_uri(p.image.url) if p.image else None,
+                "image": request.build_absolute_uri(p.image.url) if p.image else (gallery_urls[0] if gallery_urls else None),
+                "images": gallery_urls,
                 "current_price": float(p.current_price),
                 "original_price": float(p.original_price) if p.original_price else None,
+                "supplier_cost": float(p.supplier_cost) if p.supplier_cost else 0.0,
+                "supplier_sku": p.supplier_sku,
                 "stock_quantity": p.stock_quantity,
+                "description": p.description,
                 "is_active": p.is_active,
                 "is_featured": p.is_featured,
             })
         return Response(data)
 
+    def post(self, request):
+        name = request.data.get("name")
+        if not name:
+            return Response({"error": "Product name is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_price = request.data.get("current_price")
+        if current_price is None:
+            return Response({"error": "Current price is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            current_price_dec = Decimal(str(current_price))
+        except Exception:
+            return Response({"error": "Invalid current price format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        original_price = request.data.get("original_price")
+        original_price_dec = None
+        if original_price:
+            try:
+                original_price_dec = Decimal(str(original_price))
+            except Exception:
+                pass
+
+        supplier_cost = request.data.get("supplier_cost")
+        supplier_cost_dec = Decimal("0.00")
+        if supplier_cost:
+            try:
+                supplier_cost_dec = Decimal(str(supplier_cost))
+            except Exception:
+                pass
+
+        stock_quantity = int(request.data.get("stock_quantity", 0))
+        description = request.data.get("description", "")
+        supplier_sku = request.data.get("supplier_sku", "")
+        
+        is_active = request.data.get("is_active", True)
+        if isinstance(is_active, str):
+            is_active = is_active.lower() in ("true", "1", "yes")
+
+        is_featured = request.data.get("is_featured", False)
+        if isinstance(is_featured, str):
+            is_featured = is_featured.lower() in ("true", "1", "yes")
+
+        category_id = request.data.get("category") or request.data.get("category_id")
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.filter(pk=category_id).first()
+            except Exception:
+                pass
+
+        # Check for images: single cover image and/or list of images
+        single_image = request.FILES.get("image")
+        uploaded_images = request.FILES.getlist("images")
+
+        product = Product(
+            name=name,
+            current_price=current_price_dec,
+            original_price=original_price_dec,
+            supplier_cost=supplier_cost_dec,
+            supplier_sku=supplier_sku,
+            stock_quantity=stock_quantity,
+            description=description,
+            category=category,
+            is_active=is_active,
+            is_featured=is_featured,
+        )
+
+        if single_image:
+            product.image = single_image
+        elif uploaded_images:
+            product.image = uploaded_images[0]
+
+        product.save()
+
+        # Save all uploaded images to ProductImage gallery
+        order_idx = 0
+        if single_image:
+            ProductImage.objects.create(
+                product=product,
+                image=single_image,
+                alt_text=f"{product.name} primary",
+                order=order_idx
+            )
+            order_idx += 1
+
+        for img_file in uploaded_images:
+            if single_image and img_file.name == single_image.name:
+                continue
+            ProductImage.objects.create(
+                product=product,
+                image=img_file,
+                alt_text=f"{product.name} photo {order_idx + 1}",
+                order=order_idx
+            )
+            order_idx += 1
+
+        # Return fresh data
+        fresh = Product.objects.select_related("category", "supplier").prefetch_related("images").get(pk=product.pk)
+        gallery_urls = [request.build_absolute_uri(img.image.url) for img in fresh.images.all() if img.image]
+
+        return Response({
+            "id": fresh.id,
+            "name": fresh.name,
+            "slug": fresh.slug,
+            "category_id": fresh.category_id,
+            "category_name": fresh.category.name if fresh.category else "Uncategorized",
+            "image": request.build_absolute_uri(fresh.image.url) if fresh.image else (gallery_urls[0] if gallery_urls else None),
+            "images": gallery_urls,
+            "current_price": float(fresh.current_price),
+            "original_price": float(fresh.original_price) if fresh.original_price else None,
+            "supplier_cost": float(fresh.supplier_cost),
+            "stock_quantity": fresh.stock_quantity,
+            "is_active": fresh.is_active,
+            "is_featured": fresh.is_featured,
+        }, status=status.HTTP_201_CREATED)
+
 
 class AdminProductQuickUpdateView(APIView):
     """
-    PATCH /api/admin/products/<int:pk>/
-    Quickly update stock, price, or visibility.
+    PATCH /api/admin/products/<int:pk>/ - Quick update stock, price, or visibility.
+    DELETE /api/admin/products/<int:pk>/ - Delete a product.
     """
     permission_classes = [permissions.IsAdminUser]
 
@@ -275,6 +414,12 @@ class AdminProductQuickUpdateView(APIView):
             "is_active": product.is_active,
             "is_featured": product.is_featured,
         })
+
+    def delete(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        product_name = product.name
+        product.delete()
+        return Response({"message": f"Product '{product_name}' deleted successfully."}, status=status.HTTP_200_OK)
 
 
 class AdminSupplierListCreateView(APIView):
@@ -394,3 +539,75 @@ class AdminProductSourcingUpdateView(APIView):
         product.save()
         fresh = Product.objects.select_related("category", "supplier").get(pk=product.pk)
         return Response(ProductSourcingSerializer(fresh, context={"request": request}).data)
+
+
+class AdminSupportTicketListView(APIView):
+    """
+    GET /api/admin/support/?status=open&inquiry_type=product&search=ORD-123
+    Lists customer support tickets and inquiries for staff with operational metrics.
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request):
+        queryset = SupportTicket.objects.select_related("user").order_by("-created_at")
+
+        status_filter = request.query_params.get("status")
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+
+        inquiry_type = request.query_params.get("inquiry_type")
+        if inquiry_type:
+            queryset = queryset.filter(inquiry_type=inquiry_type)
+
+        search_query = request.query_params.get("search", "").strip()
+        if search_query:
+            queryset = queryset.filter(
+                Q(ticket_number__icontains=search_query)
+                | Q(name__icontains=search_query)
+                | Q(email__icontains=search_query)
+                | Q(subject__icontains=search_query)
+                | Q(order_number__icontains=search_query)
+                | Q(product_name__icontains=search_query)
+            )
+
+        # Meta counters for quick tabs
+        all_count = SupportTicket.objects.count()
+        open_count = SupportTicket.objects.filter(status="open").count()
+        in_progress_count = SupportTicket.objects.filter(status="in_progress").count()
+        resolved_count = SupportTicket.objects.filter(status="resolved").count()
+
+        serializer = SupportTicketSerializer(queryset, many=True)
+        return Response({
+            "tickets": serializer.data,
+            "counts": {
+                "all": all_count,
+                "open": open_count,
+                "in_progress": in_progress_count,
+                "resolved": resolved_count,
+            }
+        })
+
+
+class AdminSupportTicketDetailUpdateView(APIView):
+    """
+    GET /api/admin/support/<int:pk>/
+    PATCH /api/admin/support/<int:pk>/
+    Inspect customer ticket details or update status (open, in_progress, resolved).
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, pk):
+        ticket = get_object_or_404(SupportTicket, pk=pk)
+        return Response(SupportTicketSerializer(ticket).data)
+
+    def patch(self, request, pk):
+        ticket = get_object_or_404(SupportTicket, pk=pk)
+        new_status = request.data.get("status")
+        if new_status and new_status in dict(SupportTicket.STATUS_CHOICES):
+            ticket.status = new_status
+            ticket.save()
+            return Response({
+                "message": f"Ticket #{ticket.ticket_number} status updated to {new_status}.",
+                "ticket": SupportTicketSerializer(ticket).data
+            })
+        return Response({"error": "Invalid status choice."}, status=status.HTTP_400_BAD_REQUEST)

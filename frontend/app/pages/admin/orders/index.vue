@@ -6,8 +6,8 @@
             <div class="header-section">
                 <div>
                     <span class="badge-staff">Fulfillment Station</span>
-                    <h1>Order Packaging & Dropship Tracking</h1>
-                    <p class="subtitle">Assign supplier tracking codes, manage packaging stages, and monitor customer
+                    <h1>Order Packaging & Parcel Tracking</h1>
+                    <p class="subtitle">Assign carrier tracking codes, manage packaging stages, and monitor customer
                         orders.</p>
                 </div>
 
@@ -180,7 +180,7 @@
                                 </select>
                             </td>
 
-                            <!-- Dropship Tracking Number -->
+                            <!-- KyroKart Tracking Number -->
                             <td class="col-tracking">
                                 <div class="tracking-edit-box">
                                     <input type="text" :value="editingTracking[ord.order_number] ?? ord.tracking_number"
@@ -210,7 +210,7 @@
                 <div class="inspect-modal-card">
                     <div class="modal-header">
                         <div>
-                            <span class="modal-sub">Dropship Packing Slip</span>
+                            <span class="modal-sub">KyroKart Packing Slip</span>
                             <h2>{{ inspectingOrder.order_number }}</h2>
                         </div>
                         <div class="header-modal-actions">
@@ -283,7 +283,7 @@
                             </div>
                             <div class="total-line">
                                 <span>Shipping:</span>
-                                <span class="free-text">Free (Direct Dropship)</span>
+                                <span class="free-text">Free (KyroKart Direct)</span>
                             </div>
                             <div v-if="inspectingOrder.coupon_code" class="total-line discount-line">
                                 <span>Coupon Discount ({{ inspectingOrder.coupon_code }}):</span>
@@ -303,7 +303,8 @@
 
 <script setup>
 definePageMeta({
-    middleware: 'auth'
+    middleware: 'admin',
+    layout: 'admin'
 })
 
 const { getOrders, updateOrder } = useAdminApi()

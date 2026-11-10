@@ -4,7 +4,7 @@
         <div class="container">
             <!-- Hero Header -->
             <div class="hero-section">
-                <span class="badge-pill">Dropship Live Tracking</span>
+                <span class="badge-pill">KyroKart Live Tracking</span>
                 <h1>Track Your Shipment</h1>
                 <p class="subtitle">Enter your Order Number and Account Email below for real-time warehouse sourcing &
                     delivery updates.</p>

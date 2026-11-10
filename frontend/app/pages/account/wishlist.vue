@@ -3,8 +3,13 @@
     <div class="wishlist-page">
         <div class="container">
             <div class="page-header">
-                <div>
-                    <NuxtLink to="/account" class="back-link">&larr; Back to My Account</NuxtLink>
+                <div class="header-titles">
+                    <NuxtLink to="/account" class="btn-back-nav" aria-label="Back to My Account">
+                        <span class="back-arrow-wrap">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </span>
+                        <span>Back to My Account</span>
+                    </NuxtLink>
                     <h1>My Wishlist</h1>
                     <p class="subtitle">Keep track of the products you love and want to order later.</p>
                 </div>
@@ -125,15 +130,15 @@ onMounted(() => {
     margin-bottom: 2.5rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1.5rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.back-link {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 0.5rem;
+.header-titles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
 }
 
 .page-header h1 {

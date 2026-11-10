@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
-from .models import CustomerProfile, Address, SupportTicket
+from .models import CustomerProfile, Address, SupportTicket, NewsletterSubscriber
 
 
 
@@ -163,3 +163,10 @@ class SupportTicketSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["user"] = request.user
         return super().create(validated_data)
+
+
+class NewsletterSubscriberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsletterSubscriber
+        fields = ["id", "email", "created_at"]
+        read_only_fields = ["id", "created_at"]

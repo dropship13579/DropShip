@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomerProfile, Address, SupportTicket
+from .models import CustomerProfile, Address, SupportTicket, NewsletterSubscriber
 
 
 
@@ -21,4 +21,11 @@ class AddressAdmin(admin.ModelAdmin):
 class SupportTicketAdmin(admin.ModelAdmin):
     list_display = ["ticket_number", "name", "email", "inquiry_type", "product_name", "status", "created_at"]
     list_filter = ["status", "inquiry_type", "created_at"]
-    search_fields = ["ticket_number", "name", "email", "subject", "product_name", "order_number"]
+    search_fields = ["ticket_number", "name", "email", "subject", "product_name", "order_number"]
+
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ["email", "is_active", "created_at"]
+    list_filter = ["is_active", "created_at"]
+    search_fields = ["email"]

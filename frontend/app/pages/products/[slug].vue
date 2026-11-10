@@ -9,18 +9,60 @@
       <div v-else-if="error" class="error-wrap">
         <h2>Product Not Found</h2>
         <p>{{ error }}</p>
-        <NuxtLink to="/shop" class="btn-back">Back to Shop</NuxtLink>
+        <NuxtLink to="/shop" class="btn-back-nav">
+          <span class="back-arrow-wrap">
+            <i class="fa-solid fa-arrow-left"></i>
+          </span>
+          <span>Return to Shop</span>
+        </NuxtLink>
       </div>
 
       <div v-else-if="product">
+        <!-- Top Bar Navigation with Back Button & Breadcrumbs -->
+        <div class="product-top-bar">
+          <NuxtLink to="/shop" class="btn-back-nav" aria-label="Back to Shop Catalog">
+            <span class="back-arrow-wrap">
+              <i class="fa-solid fa-arrow-left"></i>
+            </span>
+            <span>Back to Shop</span>
+          </NuxtLink>
+
+          <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+            <NuxtLink to="/">Home</NuxtLink>
+            <span class="bc-sep">/</span>
+            <NuxtLink to="/shop">Shop</NuxtLink>
+            <template v-if="product.category">
+              <span class="bc-sep">/</span>
+              <NuxtLink :to="`/shop?category=${product.category.slug}`">{{ product.category.name }}</NuxtLink>
+            </template>
+            <span class="bc-sep">/</span>
+            <span class="bc-curr">{{ product.name }}</span>
+          </nav>
+        </div>
+
         <!-- Main Product Layout -->
         <div class="product-layout">
           <div class="product-gallery">
             <div class="main-image-wrap">
-              <img v-if="product.image" :src="product.image" :alt="product.name" class="main-img">
+              <img v-if="currentSelectedImage || product.image" :src="currentSelectedImage || product.image" :alt="product.name" class="main-img">
               <div v-else class="image-fallback">
-                <span>{{ product.category?.name || 'DropShip' }}</span>
+                <span>{{ product.category?.name || 'KyroKart' }}</span>
               </div>
+            </div>
+
+            <!-- Multi-Image Gallery Thumbnail Strip -->
+            <div v-if="galleryImages.length > 1" class="gallery-thumbs">
+              <button
+                v-for="(imgUrl, idx) in galleryImages"
+                :key="idx"
+                type="button"
+                class="thumb-box"
+                :class="{ active: (currentSelectedImage || product.image) === imgUrl }"
+                @click="currentSelectedImage = imgUrl"
+                :aria-label="`View image ${idx + 1}`"
+              >
+                <img :src="imgUrl" :alt="`${product.name} thumbnail ${idx + 1}`" />
+              </button>
             </div>
           </div>
 
@@ -279,6 +321,19 @@ const { isAuthenticated } = useAuthState()
 const { isWishlisted, toggleWishlist } = useWishlist()
 
 const product = ref(null)
+const currentSelectedImage = ref('')
+
+const galleryImages = computed(() => {
+  const list = []
+  if (product.value?.image) list.push(product.value.image)
+  if (Array.isArray(product.value?.images)) {
+    product.value.images.forEach(img => {
+      const url = typeof img === 'string' ? img : img.image
+      if (url && !list.includes(url)) list.push(url)
+    })
+  }
+  return list
+})
 const loading = ref(true)
 const error = ref('')
 const quantity = ref(1)
@@ -420,6 +475,47 @@ onMounted(() => {
   margin: 0 auto;
 }
 
+.product-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-trail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb-trail a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.breadcrumb-trail a:hover {
+  color: var(--primary);
+}
+
+.bc-sep {
+  color: var(--border-color);
+  font-size: 0.8rem;
+}
+
+.bc-curr {
+  color: var(--text-main);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
 .product-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -441,6 +537,44 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+}
+
+.gallery-thumbs {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+}
+
+.thumb-box {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-color);
+  background: #f1f5f9;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.thumb-box:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.thumb-box.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.thumb-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;

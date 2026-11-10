@@ -12,6 +12,7 @@ from .views import (
     ChangePasswordView,
     AddressViewSet,
     SupportTicketCreateView,
+    NewsletterSubscribeView,
 )
 
 
@@ -29,5 +30,6 @@ urlpatterns = [
     path("profile/", ProfileView.as_view(), name="accounts-profile"),
     path("change/password/", ChangePasswordView.as_view(), name="accounts-change-password"),
     path("support/", SupportTicketCreateView.as_view(), name="accounts-support"),
+    path("newsletter/", NewsletterSubscribeView.as_view(), name="accounts-newsletter"),
     path("", include(router.urls)),
 ]

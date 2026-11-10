@@ -1,8 +1,20 @@
 from rest_framework import serializers
 
-from .models import Product, ProductReview, WishlistItem, Supplier
+from .models import Product, ProductImage, ProductReview, WishlistItem, Supplier
 
 from categories.serializers import CategorySerializer
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = [
+            "id",
+            "image",
+            "alt_text",
+            "order",
+            "created_at",
+        ]
 
 
 
@@ -77,6 +89,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
+    images = ProductImageSerializer(many=True, read_only=True)
     is_in_stock = serializers.BooleanField(read_only=True)
     discount_percentage = serializers.IntegerField(read_only=True)
     related_products = serializers.SerializerMethodField()
@@ -91,6 +104,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "description",
             "specifications",
             "image",
+            "images",
             "current_price",
             "original_price",
             "discount_percentage",
@@ -110,6 +124,35 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         
         related = Product.objects.filter(category=obj.category, is_active=True).exclude(id=obj.id)[:4]
         return ProductListSerializer(related, many=True).data
+
+
+class ProductAdminSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
+    category_name = serializers.CharField(source="category.name", read_only=True, default="Uncategorized")
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "category",
+            "category_name",
+            "description",
+            "specifications",
+            "image",
+            "images",
+            "current_price",
+            "original_price",
+            "supplier_cost",
+            "supplier_sku",
+            "stock_quantity",
+            "is_active",
+            "is_featured",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["slug", "created_at", "updated_at"]
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):

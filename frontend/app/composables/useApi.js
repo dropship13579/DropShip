@@ -18,10 +18,15 @@ export const useApi = () => {
         const url = endpoint.startsWith('http') ? endpoint : `${baseURL}${endpoint}`
         const method = (options.method || 'GET').toUpperCase()
 
+        const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
+
         const headers = {
-            'Content-Type': 'application/json',
             Accept: 'application/json',
             ...(options.headers || {})
+        }
+
+        if (!isFormData && !headers['Content-Type']) {
+            headers['Content-Type'] = 'application/json'
         }
 
         // Forward browser cookies during SSR requests to Django

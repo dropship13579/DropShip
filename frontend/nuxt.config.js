@@ -5,6 +5,12 @@ export default defineNuxtConfig({
   telemetry: false,
   app: {
     head: {
+      title: 'KyroKart | Premium Direct E-Commerce Store',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'KyroKart - Curated products delivered directly from audited manufacturers with zero retail markups.' }
+      ],
       link: [
         {
           rel: 'stylesheet',
@@ -22,6 +28,10 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css'
   ],
+  routeRules: {
+    '/admin/suppliers': { redirect: { to: '/admin/products', statusCode: 302 } },
+    '/admin/suppliers/**': { redirect: { to: '/admin/products', statusCode: 302 } }
+  },
   devServer: {
     port: 3000,
     host: 'localhost'

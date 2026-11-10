@@ -4,25 +4,18 @@
     <div class="footer-container">
       <!-- Column 1: Brand Info -->
       <div class="footer-col brand-col">
-        <NuxtLink to="/" class="footer-logo">
-          <div class="footer-logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-              <line x1="12" y1="22.08" x2="12" y2="12"></line>
-            </svg>
-          </div>
-          <span><span class="brand-text">Drop</span><span class="accent-text">Ship</span></span>
+        <NuxtLink to="/" class="footer-logo" aria-label="KyroKart Home">
+          <img src="/images/logo.png" alt="KyroKart Logo" class="footer-brand-logo-img" />
         </NuxtLink>
 
         <p class="brand-desc">
           Your trusted destination for curated tech, smart lifestyle accessories, and daily essentials delivered directly
-          from audited global suppliers with zero retail markups.
+          from verified global manufacturers with zero retail markups.
         </p>
 
         <div class="footer-guarantee-badge">
           <span class="shield-icon"><i class="fa-solid fa-shield-halved"></i></span>
-          <span>Verified Direct Supplier Network</span>
+          <span>Verified Direct Manufacturer Network</span>
         </div>
       </div>
 
@@ -82,7 +75,7 @@
     <div class="footer-bottom">
       <div class="footer-bottom-inner">
         <p class="copyright-text">
-          &copy; {{ new Date().getFullYear() }} DropShip E-Commerce Platform. All rights reserved.
+          &copy; {{ new Date().getFullYear() }} KyroKart E-Commerce Platform. All rights reserved.
         </p>
 
         <div class="status-indicator">
@@ -125,27 +118,24 @@
 .footer-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 1rem;
+  background: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.2s;
 }
 
-.footer-logo-mark {
-  width: 32px;
+.footer-logo:hover {
+  opacity: 0.92;
+}
+
+.footer-brand-logo-img {
   height: 32px;
-  border-radius: var(--radius-xs);
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-
-.accent-text {
-  color: #38bdf8;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  display: block;
 }
 
 .brand-desc {

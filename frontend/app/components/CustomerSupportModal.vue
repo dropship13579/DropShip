@@ -199,8 +199,8 @@
               <span class="channel-icon"><i class="fa-solid fa-envelope"></i></span>
               <h4>Email Support</h4>
               <p>For detailed order or billing inquiries.</p>
-              <a href="mailto:support@dropshipstore.com" class="channel-action">
-                support@dropshipstore.com
+              <a href="mailto:support@kyrokart.com" class="channel-action">
+                support@kyrokart.com
               </a>
               <span class="channel-badge">Average reply: &lt; 2 hrs</span>
             </div>
@@ -305,7 +305,7 @@ const quickAnswers = [
   },
   {
     icon: 'fa-solid fa-shield-halved',
-    title: 'Supplier Quality Standards',
+    title: 'Product Quality Standards',
     desc: 'All products undergo rigorous factory pre-shipment inspections and come with a 1-year store warranty.',
     link: null
   }

@@ -39,12 +39,6 @@
                 </div>
             </div>
 
-            <!-- Navigation Tabs (Only Admin Sections) -->
-            <nav class="admin-tabs">
-                <NuxtLink to="/admin" class="tab-item active">Website Status & Charts</NuxtLink>
-                <NuxtLink to="/admin/products" class="tab-item">Product Inventory</NuxtLink>
-            </nav>
-
             <!-- Loading Spinner -->
             <div v-if="loading && !stats" class="loading-wrap">
                 <LoadingSpinner text="Compiling website telemetry..." />
@@ -130,6 +124,21 @@
                             <span>Registered Buyer Profiles</span>
                         </div>
                     </div>
+
+                    <div class="kpi-card" :class="{ 'card-alert': stats.support?.open_tickets > 0 }">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Open Support Inquiries</span>
+                            <div class="kpi-icon icon-support">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{{ stats.support?.open_tickets ?? 0 }}</div>
+                        <div class="kpi-footer">
+                            <NuxtLink to="/admin/support" class="kpi-action-link">
+                                Open Support Desk &rarr;
+                            </NuxtLink>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Charts Section 1: Revenue Velocity & Order Lifecycle -->
@@ -139,7 +148,7 @@
                         <div class="card-header">
                             <div>
                                 <h3>7-Day Sales & Revenue Velocity</h3>
-                                <p class="card-subtitle">Daily dropship order volume</p>
+                                <p class="card-subtitle">Daily KyroKart order volume</p>
                             </div>
                         </div>
 
@@ -269,7 +278,8 @@
 
 <script setup>
 definePageMeta({
-    middleware: 'admin'
+    middleware: 'admin',
+    layout: 'admin'
 })
 
 const { getStats } = useAdminApi()
@@ -404,33 +414,6 @@ onMounted(() => {
     background: #2563eb;
 }
 
-/* Tabs */
-.admin-tabs {
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: 2rem;
-}
-
-.tab-item {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    padding: 0.75rem 1.25rem;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.15s;
-}
-
-.tab-item:hover {
-    color: var(--text-main);
-}
-
-.tab-item.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-}
-
 /* Loading & Error */
 .loading-wrap {
     padding: 6rem 0;
@@ -508,6 +491,40 @@ onMounted(() => {
 .icon-customers {
     background: #f0fdf4;
     color: #16a34a;
+}
+
+.icon-support {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.kpi-card.card-alert {
+    border-color: #fca5a5;
+    background: #fffafa;
+}
+
+.kpi-action-link {
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.kpi-action-link:hover {
+    text-decoration: underline;
+}
+
+.tab-badge-alert {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.1rem 0.45rem;
+    border-radius: var(--radius-full);
+    margin-left: 0.4rem;
 }
 
 .kpi-value {

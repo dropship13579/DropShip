@@ -10,6 +10,8 @@ from .views import (
     AdminSupplierDetailView,
     AdminProductSourcingListView,
     AdminProductSourcingUpdateView,
+    AdminSupportTicketListView,
+    AdminSupportTicketDetailUpdateView,
 )
 
 app_name = "dashboard"
@@ -24,4 +26,6 @@ urlpatterns = [
     path("suppliers/sourcing/<int:pk>/", AdminProductSourcingUpdateView.as_view(), name="admin-product-sourcing-update"),
     path("suppliers/", AdminSupplierListCreateView.as_view(), name="admin-suppliers-list"),
     path("suppliers/<int:pk>/", AdminSupplierDetailView.as_view(), name="admin-supplier-detail"),
+    path("support/", AdminSupportTicketListView.as_view(), name="admin-support-list"),
+    path("support/<int:pk>/", AdminSupportTicketDetailUpdateView.as_view(), name="admin-support-detail-update"),
 ]
