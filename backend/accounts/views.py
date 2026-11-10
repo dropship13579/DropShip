@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from rest_framework import status, permissions, viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -20,6 +21,7 @@ from .serializers import (
 
 @api_view(["GET"])
 @permission_classes([permissions.AllowAny])
+@ensure_csrf_cookie
 def get_crsf_token(request):
     token = get_token(request)
     return Response({
@@ -28,6 +30,7 @@ def get_crsf_token(request):
 
 
 class RegisterView(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
@@ -47,6 +50,7 @@ class RegisterView(APIView):
     
     
 class LoginView(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -65,6 +69,7 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -201,4 +206,4 @@ class NewsletterSubscribeView(APIView):
                 "subscriber": NewsletterSubscriberSerializer(subscriber).data,
             },
             status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
-        )
+        )

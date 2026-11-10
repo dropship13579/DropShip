@@ -3,15 +3,28 @@ export const useApi = () => {
     const config = useRuntimeConfig()
     const baseURL = config.public.apiBase
 
+    const csrfTokenState = useState('app_csrf_token', () => '')
+
+    const setCsrfToken = (token) => {
+        if (token) {
+            csrfTokenState.value = token
+        }
+    }
 
     const getCsrfToken = () => {
+        if (csrfTokenState.value) {
+            return csrfTokenState.value
+        }
         if (import.meta.server) {
             const reqHeaders = useRequestHeaders(['cookie'])
             const match = reqHeaders.cookie?.match(/csrftoken=([^;]+)/)
             return match ? match[1] : ''
         }
-        const match = document.cookie.match(/csrftoken=([^;]+)/)
-        return match ? match[1] : ''
+        if (typeof document !== 'undefined') {
+            const match = document.cookie.match(/csrftoken=([^;]+)/)
+            return match ? match[1] : ''
+        }
+        return ''
     }
 
     const fetchWithAuth = async (endpoint, options = {}) => {
@@ -65,6 +78,7 @@ export const useApi = () => {
 
     return {
         fetchWithAuth,
-        getCsrfToken
+        getCsrfToken,
+        setCsrfToken
     }
 }

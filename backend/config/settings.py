@@ -28,7 +28,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-_@)6-o5!ah=ta#%3$dpn$s-qes
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", 'True').lower() in ("true", "1")
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost, 127.0.0.1, testserver").split(",")]
+ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost, 127.0.0.1, testserver, .trycloudflare.com").split(",")]
+if ".trycloudflare.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(".trycloudflare.com")
+
+# Trust Cloudflare Tunnel / Reverse Proxy SSL headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -164,19 +169,33 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
-    "http://127.0.0.1:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://klyrokart.vercel.app",
+    "https://kyrokart.vercel.app",
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/.*\.vercel\.app$",
+    r"^https:\/\/.*\.trycloudflare\.com$",
+    r"^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
+    "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://klyrokart.vercel.app",
+    "https://kyrokart.vercel.app",
+    "https://*.vercel.app",
+    "https://*.trycloudflare.com",
 ]
 
-
+# Cross-Site Cookie Configuration for Vercel (frontend) + Cloudflare Tunnel (backend)
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SAMESITE = "Lax"
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
