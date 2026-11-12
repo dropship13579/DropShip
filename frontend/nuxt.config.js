@@ -21,8 +21,9 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    apiUpstream: process.env.API_UPSTREAM || '',
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
+      apiBase: '/api'
     }
   },
   css: [
