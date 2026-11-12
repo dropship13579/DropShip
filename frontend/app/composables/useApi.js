@@ -58,7 +58,9 @@ export const useApi = () => {
             }
         }
 
-        const response = await fetch(url, {
+	const requestFetch = useRequestFetch()
+
+        const response = await requestFetch(url, {
             ...options,
             headers,
             credentials: 'include' // Always include session cookie
