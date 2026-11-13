@@ -60,15 +60,29 @@ export const useApi = () => {
 
 	const requestFetch = useRequestFetch()
 
-        const response = await requestFetch(url, {
-            ...options,
-            headers,
-            credentials: 'include' // Always include session cookie
-        })
+	try{
+        	return await requestFetch(url, {
+            	  ...options,
+            	  headers,
+            	  credentials: 'include' // Always include session cookie
+        	})
+	}catch(err){
+        	const data = err.data || null
 
-        const data = await response.json().catch(() => null)
+		const error = new Error(
+			data?.message ||
+			data?.detail ||
+			err.message ||
+			'API request failed'
+		)
 
-        if (!response.ok) {
+		error.status = err.statusCode || err.status
+		error.data = data
+
+		throw error
+	}
+
+	if (!response.ok) {
             const error = new Error(data?.message || data?.detail || `HTTP Error ${response.status}`)
             error.status = response.status
             error.data = data
